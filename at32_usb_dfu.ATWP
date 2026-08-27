@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+    <WorkBenchVersion>
+        <Version>V1.2.05</Version>
+    </WorkBenchVersion>
+    <MCUInfo>
+        <MCUSerials>AT32F403A</MCUSerials>
+        <MCUName>AT32F403ACGU7</MCUName>
+        <MCUPackage>QFN48</MCUPackage>
+    </MCUInfo>
+    <DEBUG>
+        <Mode>
+            <ModeSub name="Debug interface" value="JTAG (5pin)"/>
+        </Mode>
+    </DEBUG>
+    <SYSTEM>
+        <Mode>
+            <ModeSub name="Time_Base" value="SysTick"/>
+            <ModeSub name="UART_Printf" value="USART1"/>
+        </Mode>
+        <Parameters>
+            <ParametersSub name="Delay_Mode" value="Interrupt"/>
+        </Parameters>
+    </SYSTEM>
+    <TMR2>
+        <Mode>
+            <ModeSub name="Clock selection" value="Internal"/>
+            <ModeSub name="Activated" value="TRUE"/>
+        </Mode>
+        <Parameters>
+            <ParametersSub name="DividerValue" value="24000"/>
+            <ParametersSub name="Period" value="10000"/>
+            <ParametersSub name="Overflow_Event" value="From_C"/>
+        </Parameters>
+        <Interrupts>
+            <InterruptsSub name="Interrupt_OVFIF" value="TRUE"/>
+        </Interrupts>
+    </TMR2>
+    <USART1>
+        <Mode>
+            <ModeSub name="Mode" value="Asynchronous"/>
+        </Mode>
+        <Parameters>
+            <ParametersSub name="RealBaudRate" value="115163"/>
+        </Parameters>
+    </USART1>
+    <NVIC>
+        <SVC_Handler>1;0;0;0;0;0</SVC_Handler>
+        <PendSV_Handler>1;15;0;0;0;0</PendSV_Handler>
+        <SysTick_Handler>1;15;0;0;0;1</SysTick_Handler>
+        <FLASH_IRQHandler>0;5;0;0;0;0</FLASH_IRQHandler>
+        <CRM_IRQHandler>0;5;0;0;0;0</CRM_IRQHandler>
+        <TMR2_GLOBAL_IRQHandler>1;5;0;0;0;1</TMR2_GLOBAL_IRQHandler>
+        <USART1_IRQHandler>0;5;0;0;0;0</USART1_IRQHandler>
+    </NVIC>
+    <GPIO>
+        <Signal SignalName="GPIO_Output" PinName="PC13">
+            <Parameters name="Label" value="LED"/>
+        </Signal>
+        <Signal SignalName="GPIO_Input" PinName="PA0">
+            <Parameters name="Label" value="KEY"/>
+        </Signal>
+    </GPIO>
+    <ClockConfiguration>
+        <rtcsel>0</rtcsel>
+        <hext>8.000000</hext>
+        <hextdiv>2</hextdiv>
+        <pllhextdiv>0</pllhextdiv>
+        <pllrcs>1</pllrcs>
+        <pllmult>60</pllmult>
+        <sclkselect>1</sclkselect>
+        <ahbdiv>1</ahbdiv>
+        <apb1div>2</apb1div>
+        <apb2div>2</apb2div>
+        <usbdiv>1.0</usbdiv>
+        <hicktousb>1</hicktousb>
+        <hicktosclk>0</hicktosclk>
+        <clkout>0</clkout>
+        <clkoutdiv>1</clkoutdiv>
+        <adcdiv>6</adcdiv>
+        <systicsel>1</systicsel>
+    </ClockConfiguration>
+    <PINInfo>
+        <PinSub pinname="PC13" signalname="GPIO_Output" signaltype="3"/>
+        <PinSub pinname="PA0" signalname="GPIO_Input" signaltype="3"/>
+        <PinSub pinname="PA9" signalname="USART1_TX" signaltype="2"/>
+        <PinSub pinname="PA10" signalname="USART1_RX" signaltype="2"/>
+        <PinSub pinname="PA13" signalname="DEBUG_JTMS_SWDIO" signaltype="2"/>
+        <PinSub pinname="PA14" signalname="DEBUG_JTCK_SWCLK" signaltype="2"/>
+        <PinSub pinname="PA15" signalname="DEBUG_JTDI" signaltype="2"/>
+        <PinSub pinname="PB3" signalname="DEBUG_JTDO" signaltype="2"/>
+        <PinSub pinname="PB4" signalname="DEBUG_NJTRST" signaltype="2"/>
+    </PINInfo>
+    <ProjectInfomation>
+        <ProjectName>at32_usb_dfu</ProjectName>
+        <ProjectLocation>/home/qxun/git</ProjectLocation>
+        <ToolchainIDE>CMake</ToolchainIDE>
+        <ARMCompiler>0</ARMCompiler>
+        <BackupCode>true</BackupCode>
+        <KeepUserCode>true</KeepUserCode>
+        <NotUsedPinAnalog>false</NotUsedPinAnalog>
+        <CodeSplitIP>false</CodeSplitIP>
+        <AddNecessaryFileFlag>false</AddNecessaryFileFlag>
+        <DeletePriviousFiles>true</DeletePriviousFiles>
+        <MinHeapSize>0x1000</MinHeapSize>
+        <MinStackSize>0x1000</MinStackSize>
+        <UseFirmware>true</UseFirmware>
+        <PackageVersion>V2.2.2</PackageVersion>
+    </ProjectInfomation>
+    <FunctionRankInfo>
+        <RankSub RankNum="1" FixPosFlag="TRUE" FuncName="wk_system_clock_config" InstanceName="CRM" CodeSection="config_system_clock_rtthread" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="2" FixPosFlag="TRUE" FuncName="wk_periph_clock_config" InstanceName="CRM" CodeSection="config periph clock" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="7" FixPosFlag="TRUE" FuncName="wk_nvic_config" InstanceName="NVIC" CodeSection="config nvic" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="8" FixPosFlag="TRUE" FuncName="wk_timebase_init" InstanceName="SYSTEM" CodeSection="config timebase" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="9" FixPosFlag="TRUE" FuncName="wk_gpio_config" InstanceName="GPIO" CodeSection="gpio function" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="32" FixPosFlag="FALSE" FuncName="wk_usart1_init" InstanceName="USART1" CodeSection="usart1 function" MainDoNotCallFlag="FALSE"/>
+        <RankSub RankNum="57" FixPosFlag="FALSE" FuncName="wk_tmr2_init" InstanceName="TMR2" CodeSection="tmr2 function" MainDoNotCallFlag="FALSE"/>
+    </FunctionRankInfo>
+</Root>
