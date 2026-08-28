@@ -31,7 +31,13 @@ _Min_Stack_Size = 0x1000; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
+/*
+ * An sLib provisioning build is restricted to sectors 0..61. This prevents
+ * the provisioner itself from occupying sectors 62..63 before it erases and
+ * protects them. Normal builds retain the full 1 MiB layout.
+ */
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 124K
+                /*  LENGTH = DEFINED(__slib_provision_build__) ? 124K : 1024K */
 RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 96K
 SPIM (rx)       : ORIGIN = 0x08400000, LENGTH = 16384K
 }

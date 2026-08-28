@@ -33,6 +33,10 @@
 #include <stdio.h>
 
 #include "crypto_self_test.h"
+#if defined(AT32_SLIB_PROVISION_ENABLED)
+#include "slib_provision.h"
+#endif
+
 #include "usb_cdc.h"
 
 /* add user code end private includes */
@@ -104,6 +108,10 @@ int main(void)
   /* add user code begin 2 */
   (void)crypto_self_test_run();
   printf("%s", crypto_self_test_status_string());
+
+#if defined(AT32_SLIB_PROVISION_ENABLED)
+  slib_provision_test_run();
+#endif
 
   if (!usb_cdc_init())
   {
