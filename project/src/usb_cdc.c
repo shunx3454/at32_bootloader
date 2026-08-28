@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "at32f403a_407_conf.h"
 #include "tusb.h"
 #include "usb_cdc.h"

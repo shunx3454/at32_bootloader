@@ -30,6 +30,9 @@
 
 /* private includes ----------------------------------------------------------*/
 /* add user code begin private includes */
+#include <stdio.h>
+
+#include "crypto_self_test.h"
 #include "usb_cdc.h"
 
 /* add user code end private includes */
@@ -99,6 +102,9 @@ int main(void)
   wk_tmr2_init();
 
   /* add user code begin 2 */
+  (void)crypto_self_test_run();
+  printf("%s", crypto_self_test_status_string());
+
   if (!usb_cdc_init())
   {
     while (1)
@@ -113,7 +119,6 @@ int main(void)
     /* add user code begin 3 */
     usb_cdc_task();
     //gpio_bits_toggle(LED_GPIO_PORT, LED_PIN);
-    //wk_delay_ms(2000);
 
     /* add user code end 3 */
   }

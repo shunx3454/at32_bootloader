@@ -40,6 +40,9 @@ add_subdirectory(cmake/at32_workbench)
 # Add TinyUSB device stack and the AT32F403A FSDEV port.
 include("cmake/tinyusb.cmake")
 
+# Add the embedded Mbed TLS 4.2 crypto backend (TF-PSA-Crypto).
+include("cmake/mbedtls.cmake")
+
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
