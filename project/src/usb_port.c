@@ -4,11 +4,13 @@
 
 void usb_port_init(void)
 {
-  // Use the dedicated USB IRQ vectors instead of the USB/CAN1 shared vectors.
+  /* 将 USB 中断映射到专用向量，避免与 CAN1 共用中断入口。 */
   crm_usb_interrupt_remapping_set(CRM_USB_INT73_INT74);
 
-  // The CPU runs at 240 MHz, which cannot be divided to 48 MHz by the USB PLL
-  // divider. Use the calibrated 48 MHz HICK clock as the USB source instead.
+  /*
+   * CPU 运行在 240 MHz，USB PLL 分频器无法从该频率得到 48 MHz，因此改用
+   * HICK 作为 USB 时钟，并由 ACC 根据 USB SOF 对 HICK 做自动校准。
+   */
   crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
   crm_periph_clock_enable(CRM_ACC_PERIPH_CLOCK, TRUE);
   acc_write_c1(7980);
@@ -18,6 +20,7 @@ void usb_port_init(void)
 
   crm_periph_clock_enable(CRM_USB_PERIPH_CLOCK, TRUE);
 
+  /* TinyUSB 使用映射后的高/低优先级及唤醒中断，统一配置相同抢占优先级。 */
   uint32_t const priority = NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 1, 0);
   NVIC_SetPriority(USBFS_MAPH_IRQn, priority);
   NVIC_SetPriority(USBFS_MAPL_IRQn, priority);
@@ -26,11 +29,13 @@ void usb_port_init(void)
 
 uint32_t tusb_time_millis_api(void)
 {
+  /* TinyUSB 裸机端口使用项目的 1 ms SysTick 作为协议超时时基。 */
   return wk_timebase_get();
 }
 
 void USBFS_MAPH_IRQHandler(void)
 {
+  /* 三个 USBFS 中断入口统一交给 TinyUSB 的根端口 0 处理。 */
   tud_int_handler(0);
 }
 

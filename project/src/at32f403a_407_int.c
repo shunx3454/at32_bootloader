@@ -186,6 +186,7 @@ void SysTick_Handler(void)
 
   /* add user code end SysTick_IRQ 0 */
 
+  /* 只累加 1 ms 软件时基，保持系统节拍中断尽可能短。 */
   wk_timebase_handler();
 
   /* add user code begin SysTick_IRQ 1 */
@@ -208,13 +209,14 @@ void TMR2_GLOBAL_IRQHandler(void)
   if(tmr_interrupt_flag_get(TMR2, TMR_OVF_FLAG) != RESET)
   {
     /* add user code begin TMR2_TMR_OVF_FLAG */
-    /* clear flag */
+    /* 先清溢出标志再翻转状态灯，避免退出中断后立即再次进入。 */
     tmr_flag_clear(TMR2, TMR_OVF_FLAG);
+
+    gpio_bits_toggle(LED_GPIO_PORT, LED_PIN);
     /* add user code end TMR2_TMR_OVF_FLAG */
   }
 
   /* add user code begin TMR2_GLOBAL_IRQ 1 */
-    gpio_bits_toggle(LED_GPIO_PORT, LED_PIN);
 
   /* add user code end TMR2_GLOBAL_IRQ 1 */
 }
