@@ -115,6 +115,7 @@ extern "C" {
 /* add user code end dma define */
 
 /* Private defines -------------------------------------------------------------*/
+/* PC13 为状态灯；PA0 配置为上拉输入，按键按下时读取为低电平。 */
 #define LED_PIN    GPIO_PINS_13
 #define LED_GPIO_PORT    GPIOC
 #define KEY_PIN    GPIO_PINS_0

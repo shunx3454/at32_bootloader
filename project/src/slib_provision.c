@@ -20,18 +20,17 @@
 #define SLIB_CONFIRM_TIMEOUT_MS  60000u
 
 /*
- * Public, non-secret provision record written into SLIB_DATA. The payload is
- * the product P-256 public key in SEC1 uncompressed form, copied from
- * /home/qxun/secure_keys/ecdsa_public_sec1.bin. The private key is never
- * included in this firmware.
+ * 写入 SLIB_DATA 的公开配置记录，不包含任何秘密数据。负载是从
+ * /home/qxun/secure_keys/ecdsa_public_sec1.bin 复制的产品 P-256 公钥，采用
+ * SEC1 非压缩格式；私钥绝不能进入本固件或 MCU。
  *
- *  0..3   magic "SLIB"
- *  4      record version (1)
- *  5      encoding (2 = SEC1 uncompressed)
- *  6..7   key length (65, little-endian)
- *  8..11  test key id (1, little-endian)
+ *  0..3   魔数 "SLIB"
+ *  4      记录版本（1）
+ *  5      编码（2 = SEC1 非压缩点）
+ *  6..7   公钥长度（65，小端）
+ *  8..11  密钥编号（1，小端）
  * 12..76  0x04 || X || Y
- * 77..79  erased padding
+ * 77..79  保持 Flash 擦除态的填充字节
  */
 static uint8_t const slib_test_record[80] = {
   0x53, 0x4c, 0x49, 0x42, 0x01, 0x02, 0x41, 0x00,
@@ -59,6 +58,7 @@ static bool slib_record_matches(void)
 
 static bool slib_range_matches(void)
 {
+  /* 配置启用后同时核对指令起始、数据起始和结束扇区，防止范围写错。 */
   return flash_slib_start_sector_get() == SLIB_INSTRUCTION_SECTOR &&
          flash_slib_datastart_sector_get() == SLIB_DATA_SECTOR &&
          flash_slib_end_sector_get() == SLIB_DATA_SECTOR;
@@ -77,9 +77,9 @@ static bool uart_confirmation_received(void)
   uint32_t const start_tick = wk_timebase_get();
 
   /*
-   * Poll continuously while receiving. At 115200 baud a character arrives
-   * about every 87 us; a 1 ms delay here would overflow the one-byte USART
-   * receive register and discard most of a pasted command.
+   * 接收期间必须连续轮询。115200 波特率下约每 87 us 到达一个字符，若在这里
+   * 延时 1 ms，会使只有一个字节深度的 USART 接收寄存器溢出并丢失粘贴命令。
+   * 匹配器允许忽略前导噪声，但必须连续收到完整的 "PROVISION SLIB"。
    */
   while ((wk_timebase_get() - start_tick) < SLIB_CONFIRM_TIMEOUT_MS) {
     uint32_t const status = USART1->sts;
@@ -115,6 +115,7 @@ static bool uart_confirmation_received(void)
 
 static void slib_fatal(char const *operation, flash_status_type status)
 {
+  /* sLib 配置中途失败时停止运行，避免继续执行造成保护状态更加不确定。 */
   flash_lock();
   printf("[SLIB] FAIL: %s, flash status=%u\r\n",
          operation,
@@ -130,12 +131,13 @@ static void slib_program_record(void)
 
   flash_unlock();
 
-  /* Avoid the BSP helper's unbounded unlock wait if the MCU rejects it. */
+  /* 直接检查解锁结果，避免芯片拒绝解锁时落入 BSP 帮助函数的无界等待。 */
   FLASH->slib_unlock = SLIB_UNLOCK_KEY;
   if (FLASH->slib_misc_sts_bit.slib_ulkf == RESET) {
     slib_fatal("unlock sLib configuration", FLASH_OPERATE_TIMEOUT);
   }
 
+  /* 先提交硬件保护范围和密码，再擦除并写入两个即将受保护的扇区。 */
   status = flash_slib_enable((uint32_t)AT32_SLIB_PROVISION_PASSWORD,
                              SLIB_INSTRUCTION_SECTOR,
                              SLIB_DATA_SECTOR,
@@ -154,6 +156,7 @@ static void slib_program_record(void)
     slib_fatal("erase data sector 63", status);
   }
 
+  /* 0xFF 已是擦除态，无需编程；逐字节写入后再从受保护地址回读验证。 */
   for (size_t index = 0u; index < sizeof(slib_test_record); ++index) {
     if (slib_test_record[index] == 0xffu) {
       continue;
@@ -183,6 +186,7 @@ void slib_provision_test_run(void)
          flash_slib_state_get() == SET ? "enabled" : "disabled",
          (unsigned long)flash_slib_remaining_count_get());
 
+  /* 已启用时只做只读核验，绝不重复擦除或重新配置。 */
   if (flash_slib_state_get() == SET) {
     if (!slib_range_matches()) {
       printf("[SLIB] FAIL: active range is %u/%u/%u, expected 62/63/63.\r\n",
@@ -203,6 +207,7 @@ void slib_provision_test_run(void)
     return;
   }
 
+  /* 未启用时要求人工串口确认，降低误运行不可逆配置程序的风险。 */
   printf("[SLIB] WARNING: provisioning changes flash protection state.\r\n");
   printf("[SLIB] USART1 RX is PA10; connect adapter TX to PA10 and share GND.\r\n");
   printf("[SLIB] Keep power stable and type PROVISION SLIB within %lu seconds.\r\n",

@@ -32,9 +32,12 @@ extern "C" {
 #include <stdio.h>
 #include "at32f403a_407.h"
 
+/* 初始化并维护 Bootloader 共用的 1 ms 单调递增时基。 */
 void wk_timebase_init(void);
 void wk_timebase_handler(void);
 uint32_t wk_timebase_get(void);
+
+/* 基于 1 ms 时基的阻塞延时，仅用于启动阶段，不应放入 USB 主循环。 */
 void wk_delay_ms(uint32_t delay);
 
 #ifdef __cplusplus

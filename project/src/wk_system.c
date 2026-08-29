@@ -81,11 +81,11 @@ __WEAK void wk_timebase_init(void)
   crm_clocks_freq_type crm_clocks;
   uint32_t frequency = 0;
 
-  /* get crm_clocks */
+  /* 根据当前 AHB 实际频率计算重装值，产生精确的 1 ms SysTick。 */
   crm_clocks_freq_get(&crm_clocks);
 
   frequency = crm_clocks.ahb_freq;
-  /* config systick clock source */
+  /* SysTick 直接使用未分频 AHB 时钟。 */
   systick_clock_source_config(SYSTICK_CLOCK_SOURCE_AHBCLK_NODIV);
   /* system tick config */
   SysTick->LOAD  = (uint32_t)((frequency / 1000) - 1UL);
@@ -217,4 +217,3 @@ int __write(int fd, char *pbuffer, int size)
   return size;
 }
 #endif
-

@@ -203,7 +203,7 @@ void wk_gpio_config(void)
   /* gpio input config */
   gpio_init_struct.gpio_mode = GPIO_MODE_INPUT;
   gpio_init_struct.gpio_pins = KEY_PIN;
-  gpio_init_struct.gpio_pull = GPIO_PULL_NONE;
+  gpio_init_struct.gpio_pull = GPIO_PULL_UP;
   gpio_init(KEY_GPIO_PORT, &gpio_init_struct);
 
   /* gpio output config */

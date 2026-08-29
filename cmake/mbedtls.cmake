@@ -33,7 +33,6 @@ endforeach()
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/project/src/crypto_platform.c
-    ${CMAKE_SOURCE_DIR}/project/src/crypto_self_test.c
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} tfpsacrypto)
