@@ -10,7 +10,15 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${TINYUSB_ROOT}/src/portable/st/stm32_fsdev/fsdev_common.c
     ${CMAKE_SOURCE_DIR}/project/src/usb_port.c
     ${CMAKE_SOURCE_DIR}/project/src/usb_descriptors.c
-    ${CMAKE_SOURCE_DIR}/project/src/usb_cdc.c
+)
+
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/project/src/usb_boot.c
+    ${CMAKE_SOURCE_DIR}/project/src/boot_crc32.c
+    ${CMAKE_SOURCE_DIR}/project/src/boot_flash.c
+    ${CMAKE_SOURCE_DIR}/project/src/boot_security.c
+    ${CMAKE_SOURCE_DIR}/project/src/boot_bcb.c
+    ${CMAKE_SOURCE_DIR}/project/src/boot_manager.c
 )
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

@@ -1,0 +1,2 @@
+# TinyUSB Vendor bootloader (VID:PID cafe:4002)
+SUBSYSTEM=="usb", ATTR{idVendor}=="cafe", ATTR{idProduct}=="4002", MODE="0660", GROUP="plugdev", TAG+="uaccess"

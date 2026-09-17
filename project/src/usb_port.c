@@ -10,6 +10,8 @@ void usb_port_init(void)
   /*
    * CPU 运行在 240 MHz，USB PLL 分频器无法从该频率得到 48 MHz，因此改用
    * HICK 作为 USB 时钟，并由 ACC 根据 USB SOF 对 HICK 做自动校准。
+   * 不仅打开 USBFS 外设时钟，同时使 USBFS 硬件自动接管 PA11/PA12。
+   * GPIO 的模式、上下拉、输出类型等配置对 USB_DM/DP 不再起普通 GPIO 作用
    */
   crm_usb_clock_source_select(CRM_USB_CLOCK_SOURCE_HICK);
   crm_periph_clock_enable(CRM_ACC_PERIPH_CLOCK, TRUE);

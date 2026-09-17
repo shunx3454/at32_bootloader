@@ -32,12 +32,7 @@
 /* add user code begin private includes */
 #include <stdio.h>
 
-#include "crypto_self_test.h"
-#if defined(AT32_SLIB_PROVISION_ENABLED)
-#include "slib_provision.h"
-#endif
-
-#include "usb_cdc.h"
+#include "bootloader.h"
 
 /* add user code end private includes */
 
@@ -82,7 +77,6 @@ int main(void)
 
   /* add user code end 1 */
 
-  /* system clock config. */
   wk_system_clock_config();
 
   /* config periph clock. */
@@ -91,41 +85,26 @@ int main(void)
   /* nvic config. */
   wk_nvic_config();
 
-  /* timebase config for
-     void wk_delay_ms(uint32_t delay); */
   wk_timebase_init();
 
   /* init gpio function. */
   wk_gpio_config();
 
-  /* usart1 already supports printf. */
-  /* init usart1 function. */
+  /* USART1 已通过 _write() 重定向到 printf，用于输出启动和升级诊断信息。 */
   wk_usart1_init();
 
-  /* init tmr2 function. */
+  /* TMR2 驱动状态指示灯。 */
   wk_tmr2_init();
 
   /* add user code begin 2 */
-  (void)crypto_self_test_run();
-  printf("%s", crypto_self_test_status_string());
-
-#if defined(AT32_SLIB_PROVISION_ENABLED)
-  slib_provision_test_run();
-#endif
-
-  if (!usb_cdc_init())
-  {
-    while (1)
-    {
-    }
-  }
+  /* 此函数要么跳转到有效 App，要么常驻 USB Vendor 升级循环，不会返回。 */
+  bootloader_run();
 
   /* add user code end 2 */
 
   while(1)
   {
     /* add user code begin 3 */
-    usb_cdc_task();
     //gpio_bits_toggle(LED_GPIO_PORT, LED_PIN);
 
     /* add user code end 3 */
