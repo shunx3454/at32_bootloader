@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "AT32F403A: 下载并调试",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/at32_usb_dfu.elf",
+            "configFiles": [
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "searchDir": [
+                "/home/qxun/Downloads/openocd-at32/scripts"
+            ],
+            "preLaunchTask": "CMake: 编译 Debug",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "AT32F403A: 附加到当前程序",
+            "type": "cortex-debug",
+            "request": "attach",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/at32_usb_dfu.elf",
+            "configFiles": [
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "searchDir": [
+                "/home/qxun/Downloads/openocd-at32/scripts"
+            ],
+            "showDevDebugOutput": "none"
+        }
+    ]
+}

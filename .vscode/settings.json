@@ -1,0 +1,7 @@
+{
+    "editor.fontSize": 18,
+    "cmake.useCMakePresets": "always",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
+    "cortex-debug.openocdPath.linux": "/home/qxun/Downloads/openocd-at32/bin-linux_x86_64/openocd",
+    "cortex-debug.gdbPath.linux": "/usr/bin/gdb-multiarch"
+}

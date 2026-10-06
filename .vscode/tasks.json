@@ -1,0 +1,106 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: 配置 Debug",
+            "type": "process",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--preset",
+                "Debug"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: 编译 Debug",
+            "type": "process",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "Debug"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "CMake: 配置 Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": "$gcc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "CMake: 清理 Debug",
+            "type": "process",
+            "command": "/usr/bin/cmake",
+            "args": [
+                "--build",
+                "--preset",
+                "Debug",
+                "--target",
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "CMake: 配置 Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "OpenOCD: 下载 Debug",
+            "type": "process",
+            "command": "${config:cortex-debug.openocdPath.linux}",
+            "args": [
+                "-s",
+                "/home/qxun/Downloads/openocd-at32/scripts",
+                "-f",
+                "${workspaceFolder}/openocd.cfg",
+                "-c",
+                "program \"${workspaceFolder}/build/Debug/at32_usb_dfu.elf\" verify reset exit"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "CMake: 编译 Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "OpenOCD: 启动调试服务器",
+            "type": "process",
+            "command": "${config:cortex-debug.openocdPath.linux}",
+            "args": [
+                "-s",
+                "/home/qxun/Downloads/openocd-at32/scripts",
+                "-f",
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "openocd",
+                "pattern": {
+                    "regexp": "^(.*)$",
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Open On-Chip Debugger",
+                    "endsPattern": "Listening on port 3333 for gdb connections"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
